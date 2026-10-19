@@ -43,19 +43,18 @@ async function refreshDataForAllUsers(days: number): Promise<void> {
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
   try {
 
-    if (!process.env.CRONJOB_SECRET) {
-      throw new Error("Missing CRONJOB_SECRET")
+    if (!process.env.CRON_SECRET) {
+      throw new Error("Missing CRON_SECRET")
     }
 
-    const { secret } = req.query
 
-    if (!secret || typeof secret !== 'string') {
-      return res.status(400).send('Missing or invalid secret')
+    const authHeader = req.headers['Authorization'];
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      return res.status(401).end('Unauthorized');
     }
 
-    if (secret != process.env.CRONJOB_SECRET) {
-      return res.status(401).send('Invalid cron secret')
-    }
 
     const { days = '30' } = req.query
 
