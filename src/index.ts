@@ -12,9 +12,6 @@ async function process(token: string, file: string, days: number): Promise<void>
     fetchTraktCalendar(token, 'movies', days),
   ])
 
-  console.log(shows, movies)
-  return
-
   const ics = generateCalendar(shows, movies)
 
   await fsAsync.writeFile(file, ics)
