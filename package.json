@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "vercel dev",
-    "build": "tsc"
+    "build:db": "node dist/src/utils/dbs.js",
+    "build:compile": "tsc",
+    "build": "npm run build:compile && npm run build:db"
   },
   "keywords": [],
   "author": "",

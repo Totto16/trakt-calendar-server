@@ -11,7 +11,7 @@ export interface User {
 }
 
 
-function getDb() {
+export function getDb() {
     if (!process.env.DATABASE_URL) {
         throw new Error("Missing DATABASE_URL")
     }
@@ -19,18 +19,6 @@ function getDb() {
     const sql = neon(process.env.DATABASE_URL);
 
     return sql;
-}
-
-async function createUserTable(): Promise<void> {
-    const sql = getDb();
-
-    sql`CREATE TABLE IF NOT EXISTS users (
-        user_id SERIAL PRIMARY KEY,
-        secret VARCHAR(255) NOT NULL,
-        access_token TEXT NOT NULL,
-        expires_at DATE NOT NULL,
-        refresh_token TEXT NOT NULL
-    );`
 }
 
 
@@ -63,30 +51,10 @@ export async function getAllUsers(): Promise<User[]> {
     return data as User[]
 }
 
-
 export interface AuthState {
     state: string;
     code_verifier: string
 }
-
-
-
-async function createAuthStateTable(): Promise<void> {
-    const sql = getDb();
-
-    sql`CREATE TABLE IF NOT EXISTS auth_state (
-        state UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        code_verifier TEXT NOT NULL,
-    );`
-}
-
-
-
-export async function createTables(): Promise<void> {
-
-    await Promise.all([createUserTable(), createAuthStateTable()])
-}
-
 
 export async function addAuthState(code_verifier: string): Promise<AuthState> {
 
@@ -106,7 +74,7 @@ RETURNING *;`;
 
 
 
-export async function getAuthState(state:string): Promise<AuthState | null> {
+export async function getAuthState(state: string): Promise<AuthState | null> {
 
     const sql = getDb();
 
