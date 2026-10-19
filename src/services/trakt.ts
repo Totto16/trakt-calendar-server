@@ -95,7 +95,7 @@ export function getConnectUserUrl(code_challenge: CodeChallenge, redirect_url: s
   }
 
 
-  return `${TRAKT_AUTH_API}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge}&code_challenge_method=S256&state=${state}`
+  return `${TRAKT_AUTH_API}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge.challenge}&code_challenge_method=S256&state=${state}`
 
 }
 
