@@ -2,6 +2,8 @@
 import axios from 'axios'
 
 const TRAKT_API = 'https://api.trakt.tv'
+const TRAKT_AUTH_API = 'https://auth.trakt.tv'
+const TRAKT_HP = 'https://trakt.tv'
 
 //TODO: better type these
 export type Show = any & { _show: true }
@@ -45,7 +47,54 @@ export interface RefreshedAccessToken {
   "refresh_token": string
 }
 
-const TRAKT_AUTH_API = 'https://auth.trakt.tv'
+export function createCodeVerifier(): string {
+  // A random string of 43-128 characters from A-Z, a-z, 0-9, and -._~.
+
+  function generateRandomString(length = 43) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    const randomValues = crypto.getRandomValues(new Uint8Array(length));
+
+    return Array.from(randomValues, value => chars[value % chars.length]).join("");
+  }
+  const amount = Math.floor(Math.random() * (128 - 43 + 1)) + 43;
+
+  const code_verifier = generateRandomString(amount);
+
+  return code_verifier
+}
+
+export async function getCodeChallenge(code_verifier: string): Promise<string> {
+
+  const data = new TextEncoder().encode(code_verifier);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+
+  const bytes = new Uint8Array(hash);
+  const binary = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
+  const base64 = btoa(binary);
+
+  return base64
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+
+
+
+
+export function getConnectUserUrl(code_challenge: string, redirect_url: string): string {
+
+  if (!process.env.TRAKT_CLIENT_ID) {
+    throw new Error("Missing TRAKT_CLIENT_ID")
+  }
+
+
+  return `${TRAKT_HP}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge}&code_challenge_method=S256`
+
+}
+
+
+
 
 
 export async function refreshAccessToken(
