@@ -112,6 +112,15 @@ export async function getAuthState(state: string): Promise<AuthState | null> {
 }
 
 
+export async function deleteState(state: AuthState): Promise<void> {
+
+    const sql = getDb();
+
+    const data = await sql`DELETE FROM auth_state WHERE
+        state = ${state.state}
+    ;`;
+
+}
 
 
 //TODO: maybe use neon auth

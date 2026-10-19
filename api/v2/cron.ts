@@ -74,3 +74,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(500).send('Internal Server Error')
   }
 }
+
+
+//TODO: somehow we need to delete old aut state in some itervals, if a user doesn't finish the state, the code expires after 5 minutes!

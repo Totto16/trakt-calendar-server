@@ -1,6 +1,6 @@
 // api/user.ts
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { addUser, getAuthState } from "../../../src/utils/authentication";
+import { addUser, deleteState, getAuthState } from "../../../src/utils/authentication";
 import { getTokenFromCode } from "../../../src/services/trakt";
 import { fixDate } from "../../../src/utils/date";
 
@@ -52,8 +52,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const user = await addUser(user_secret, result.access_token, expires_at, result.refresh_token)
 
-    res.setHeader('Content-Type', 'application/json; charset=utf-8')
-    return res.status(200).send({ code, hdr: req.headers, query: req.query, state, result, user })
+    await deleteState(auth_state)
+
+    const ical_url = `https://${process.env.HOSTNAME}/api/v2/ical?user_id=${user.user_id}&secret=${user.secret}`
+
+    return res.status(200).send(`Your Trakt Calendar URL is: ${ical_url}`)
 
   } catch (err) {
     console.error(err)

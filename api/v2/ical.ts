@@ -6,17 +6,17 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
   try {
-    const { secret, id } = req.query
+    const { secret, user_id } = req.query
 
     if (!secret || typeof secret !== 'string') {
       return res.status(400).send('Missing or invalid secret')
     }
 
-    if (!id || (typeof id !== 'string' && typeof id !== 'number')) {
+    if (!user_id || (typeof user_id !== 'string' && typeof user_id !== 'number')) {
       return res.status(400).send('Missing or invalid id')
     }
 
-    const idNum = Number(id)
+    const idNum = Number(user_id)
     if (Number.isNaN(idNum) || idNum <= 0) {
       return res.status(400).send('Invalid id parameter')
     }
