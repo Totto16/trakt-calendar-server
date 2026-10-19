@@ -1,6 +1,7 @@
 // api/user.ts
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createCodeVerifier, getCodeChallenge, getConnectUserUrl } from "../../../src/services/trakt";
+import { addUserAuthState } from "../../../src/utils/authentication";
 
 
 
@@ -17,10 +18,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const redirect_url = `https://${process.env.HOSTNAME}/api/v1/auth/callback`
 
-    const url = getConnectUserUrl(redirect_url, code_challenge)
+    const state = await addUserAuthState(code_verifier.verifier)
 
+    const url = getConnectUserUrl(code_challenge.challenge, redirect_url, state.state)
 
-    // return res.redirect(302, url)
     return res.status(500).send(url)
 
   } catch (err) {

@@ -1,6 +1,5 @@
-
-
 import { neon } from "@neondatabase/serverless";
+
 
 export interface User {
     user_id: number;
@@ -22,7 +21,7 @@ function getDb() {
     return sql;
 }
 
-async function createTables(): Promise<void> {
+async function createUserTable(): Promise<void> {
     const sql = getDb();
 
     sql`CREATE TABLE IF NOT EXISTS users (
@@ -63,6 +62,49 @@ export async function getAllUsers(): Promise<User[]> {
 
     return data as User[]
 }
+
+
+export interface AuthState {
+    state: string;
+    code_verifier: string
+}
+
+
+
+async function createAuthStateTable(): Promise<void> {
+    const sql = getDb();
+
+    sql`CREATE TABLE IF NOT EXISTS auth_state (
+        state UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        code_verifier TEXT NOT NULL,
+    );`
+}
+
+
+
+export async function createTables(): Promise<void> {
+
+    await Promise.all([createUserTable(), createAuthStateTable()])
+}
+
+
+export async function addUserAuthState(code_verifier: string): Promise<AuthState> {
+
+    const sql = getDb();
+
+    const data = await sql`INSERT INTO sessions (code_verifier)
+VALUES
+    (${code_verifier})
+RETURNING *;`;
+
+    if (data.length != 1) {
+        throw new Error("Error adding state")
+    }
+
+    return data[0] as AuthState
+}
+
+
 
 //TODO: maybe use neon auth
 /* import { createNeonAuth } from '@neondatabase/auth/next/server';

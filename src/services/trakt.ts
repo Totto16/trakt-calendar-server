@@ -3,7 +3,6 @@ import axios from 'axios'
 
 const TRAKT_API = 'https://api.trakt.tv'
 const TRAKT_AUTH_API = 'https://auth.trakt.tv'
-const TRAKT_HP = 'https://trakt.tv'
 
 //TODO: better type these
 export type Show = any & { _show: true }
@@ -47,7 +46,15 @@ export interface RefreshedAccessToken {
   "refresh_token": string
 }
 
-export function createCodeVerifier(): string {
+export interface CodeVerifier {
+  verifier: string
+}
+
+export interface CodeChallenge {
+  challenge: string
+}
+
+export function createCodeVerifier(): CodeVerifier {
   // A random string of 43-128 characters from A-Z, a-z, 0-9, and -._~.
 
   function generateRandomString(length = 43) {
@@ -60,41 +67,37 @@ export function createCodeVerifier(): string {
 
   const code_verifier = generateRandomString(amount);
 
-  return code_verifier
+  return { verifier: code_verifier }
 }
 
-export async function getCodeChallenge(code_verifier: string): Promise<string> {
+export async function getCodeChallenge(code_verifier: CodeVerifier): Promise<CodeChallenge> {
 
-  const data = new TextEncoder().encode(code_verifier);
+  const data = new TextEncoder().encode(code_verifier.verifier);
   const hash = await crypto.subtle.digest("SHA-256", data);
 
   const bytes = new Uint8Array(hash);
   const binary = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
   const base64 = btoa(binary);
 
-  return base64
+  const challenge = base64
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
+
+  return { challenge }
+
 }
 
-
-
-
-
-export function getConnectUserUrl(code_challenge: string, redirect_url: string): string {
+export function getConnectUserUrl(code_challenge: string, redirect_url: string, state: string): string {
 
   if (!process.env.TRAKT_CLIENT_ID) {
     throw new Error("Missing TRAKT_CLIENT_ID")
   }
 
 
-  return `${TRAKT_HP}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge}&code_challenge_method=S256`
+  return `${TRAKT_AUTH_API}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge}&code_challenge_method=S256&state=${state}`
 
 }
-
-
-
 
 
 export async function refreshAccessToken(
