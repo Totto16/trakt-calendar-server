@@ -51,6 +51,24 @@ export async function getAllUsers(): Promise<User[]> {
     return data as User[]
 }
 
+
+export async function addUser(secret: string, access_token: string, expires_at: Date, refresh_token: string): Promise<User> {
+
+    const sql = getDb();
+
+    const data = await sql`INSERT INTO users (secret, access_token, expires_at, refresh_token)
+VALUES
+    (${secret}, ${access_token}, ${expires_at}, ${refresh_token})
+RETURNING *;`;
+
+    if (data.length != 1) {
+        throw new Error("Error adding user")
+    }
+
+    return data[0] as User
+}
+
+
 export interface AuthState {
     state: string;
     code_verifier: string

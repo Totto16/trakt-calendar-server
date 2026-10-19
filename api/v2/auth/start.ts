@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     const code_verifier = createCodeVerifier()
     const code_challenge = await getCodeChallenge(code_verifier)
 
-    const redirect_url = `https://${process.env.HOSTNAME}/api/v1/auth/callback`
+    const redirect_url = `https://${process.env.HOSTNAME}/api/v2/auth/callback`
 
     const state = await addAuthState(code_verifier.verifier)
 
