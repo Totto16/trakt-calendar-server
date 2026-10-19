@@ -43,8 +43,7 @@ async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T)
         }
     }
 
-    const result = await put(pathname, JSON.stringify(newData), { access: "private", allowOverwrite: true })
-
+    const _result = await put(pathname, JSON.stringify(newData), { access: "private", allowOverwrite: true })
 
 }
 

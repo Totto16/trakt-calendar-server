@@ -7,7 +7,6 @@ import { addNewEntries } from "../../src/utils/storage";
 
 async function getCurrentToken(user: User): Promise<string> {
 
-
   const now = new Date()
 
   if (now.getTime() > user.expires_at) {
@@ -15,10 +14,7 @@ async function getCurrentToken(user: User): Promise<string> {
     throw new Error("TODO: implement refresh logic")
   }
 
-
   return user.access_token;
-
-
 }
 
 async function refreshDataForUser(user: User, days: number): Promise<void> {
@@ -30,10 +26,7 @@ async function refreshDataForUser(user: User, days: number): Promise<void> {
     fetchTraktCalendar(token, 'movies', days),
   ])
 
-
   await addNewEntries(user, entries)
-
-
 }
 
 async function refreshDataForAllUsers(days: number): Promise<void> {
@@ -72,10 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(400).send('Invalid days parameter')
     }
 
-
-
     await refreshDataForAllUsers(daysNum)
-
 
     return res.status(200).send("Success")
   } catch (err) {

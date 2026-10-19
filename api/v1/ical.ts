@@ -1,5 +1,4 @@
 // api/ical.ts
-import { fetchTraktCalendar } from '../../src/services/trakt'
 import { getUser } from '../../src/utils/authentication';
 import { generateCalendar } from '../../src/utils/ical'
 import { getAllEntries } from '../../src/utils/storage'

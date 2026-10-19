@@ -56,8 +56,6 @@ export async function refreshAccessToken(
     throw new Error("Missing TRAKT_CLIENT_ID")
   }
 
-  const startDate = new Date().toISOString().split('T')[0]
-
   const response = await axios.post(
     `${TRAKT_AUTH_API}/oauth/token`, {
     todo: "TODO"
