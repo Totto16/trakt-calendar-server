@@ -5,7 +5,7 @@ import { readdir, readFile } from "node:fs/promises";
 async function main(): Promise<void> {
 
 
-    const sqlDir = path.join(__dirname, "src", "dbs")
+    const sqlDir = path.join(__dirname, "..", "..", "..", "src", "dbs");
 
 
     const sql = getDb();
