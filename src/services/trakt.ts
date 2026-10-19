@@ -10,6 +10,10 @@ export async function fetchTraktCalendar(
 ) {
   const startDate = new Date().toISOString().split('T')[0]
 
+  if (!process.env.TRAKT_CLIENT_ID) {
+    throw new Error("TRAKT_CLIENT_ID not set")
+  }
+
   const response = await axios.get(
     `${TRAKT_API}/calendars/my/${type}/${startDate}/${days}`,
     {

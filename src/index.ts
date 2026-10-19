@@ -3,6 +3,7 @@ import fsAsync from "node:fs/promises"
 import { fetchTraktCalendar } from './services/trakt'
 import { generateCalendar } from './utils/ical'
 import { ArgumentParser } from 'argparse'
+import dotenv from 'dotenv'
 
 async function process(token: string, file: string, days: number): Promise<void> {
 
@@ -12,9 +13,9 @@ async function process(token: string, file: string, days: number): Promise<void>
   ])
 
   console.log(shows, movies)
+  return
 
   const ics = generateCalendar(shows, movies)
-
 
   await fsAsync.writeFile(file, ics)
 
@@ -65,6 +66,8 @@ async function main(): Promise<void> {
   }
 
   try {
+    dotenv.config({ path: ['.env.local', '.env'] })
+
     await process(token, file, days)
 
   } catch (error) {
