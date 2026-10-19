@@ -109,7 +109,7 @@ export async function getTokenFromCode(
   }
 
   const response = await axios.post(
-    `${TRAKT_AUTH_API}/oauth/token`, {
+    `${TRAKT_AUTH_API}/oauth/authorize`, {
     "code": code,
     "code_verifier": code_verifier.verifier,
     "client_id": process.env.TRAKT_CLIENT_ID,
