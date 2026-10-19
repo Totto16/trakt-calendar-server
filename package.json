@@ -24,6 +24,7 @@
     "@vercel/blob": "^2.8.2",
     "axios": "^1.13.4",
     "dayjs": "^1.11.19",
+    "dotenv": "^18.0.8",
     "ical-generator": "^10.0.0"
   }
 }

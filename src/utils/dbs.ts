@@ -1,12 +1,14 @@
 import path from "node:path"
 import { getDb } from "./authentication";
 import { readdir, readFile } from "node:fs/promises";
+import dotenv from 'dotenv'
+
 
 async function main(): Promise<void> {
 
+    dotenv.config({ path: ['.env.local', '.env'] })
 
     const sqlDir = path.join(__dirname, "..", "..", "..", "src", "dbs");
-
 
     const sql = getDb();
 
