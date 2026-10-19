@@ -99,17 +99,27 @@ export function getConnectUserUrl(code_challenge: CodeChallenge, redirect_url: s
 
 }
 
+export interface Token {
+  "access_token": string;
+  "expires_in": number;
+  "expires_at": number;
+  "token_type": string;
+  "refresh_token": string;
+  "scope": string;
+  "created_at": number;
+}
+
 
 export async function getTokenFromCode(
   code: string, code_verifier: CodeVerifier, redirect_url: string,
-): Promise<RefreshedAccessToken> {
+): Promise<Token> {
 
   if (!process.env.TRAKT_CLIENT_ID) {
     throw new Error("Missing TRAKT_CLIENT_ID")
   }
 
   const response = await axios.post(
-    `${TRAKT_AUTH_API}/oauth/authorize`, {
+    `${TRAKT_AUTH_API}/oauth/token`, {
     "code": code,
     "code_verifier": code_verifier.verifier,
     "client_id": process.env.TRAKT_CLIENT_ID,
@@ -123,7 +133,7 @@ export async function getTokenFromCode(
     throw new Error(response.data)
   }
 
-  return response.data
+  return response.data as Token
 }
 
 
@@ -154,5 +164,5 @@ export async function refreshAccessToken(
     throw new Error(response.data)
   }
 
-  return response.data
+  return response.data as RefreshedAccessToken
 }
