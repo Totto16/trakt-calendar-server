@@ -12,8 +12,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       throw new Error("Missing HOSTNAME")
     }
 
-
-
     const code_verifier = createCodeVerifier()
     const code_challenge = await getCodeChallenge(code_verifier)
 
@@ -22,8 +20,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     const url = getConnectUserUrl(redirect_url, code_challenge)
 
 
-    return res.redirect(302, url)
-
+    // return res.redirect(302, url)
+    return res.status(500).send(url)
 
   } catch (err) {
     console.error(err)
