@@ -12,11 +12,15 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@vercel/node": "^24.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@neondatabase/auth": "^0.6.0-beta",
+    "@neondatabase/serverless": "^1.2.0",
     "@types/node": "^25.2.0",
+    "@vercel/blob": "^2.8.2",
     "axios": "^1.13.4",
     "dayjs": "^1.11.19",
     "ical-generator": "^10.0.0"

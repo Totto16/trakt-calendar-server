@@ -1,8 +1,9 @@
 // src/utils/ical.ts
 import ical from "ical-generator";
 import dayjs from "dayjs";
+import type { Movie, Show } from "../services/trakt";
 
-export function generateCalendar(shows: any[], movies: any[]) {
+export function generateCalendar(shows: Show[], movies: Movie[]): string {
   const calendar = ical({ name: "Trakt Calendar", timezone: "UTC" });
 
   for (const item of shows) {
