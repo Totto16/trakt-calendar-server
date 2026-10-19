@@ -1,8 +1,8 @@
 // src/utils/dbs/blob.ts
 
 import { get, put } from "@vercel/blob";
-import type { Movie, Show } from "../../services/trakt";
-import type { User } from "../authentication";
+import type { Movie, Show } from "../services/trakt";
+import type { User } from "./authentication";
 
 function getFilenames(user: User) {
     return {

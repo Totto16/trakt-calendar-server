@@ -1,7 +1,7 @@
 // api/ical.ts
 import { getUser } from '../../src/utils/authentication';
 import { generateCalendar } from '../../src/utils/ical'
-import { getAllEntries } from '../../src/utils/dbs/blob'
+import { getAllEntries } from '../../src/utils/blob'
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {

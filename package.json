@@ -17,7 +17,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@neondatabase/auth": "^0.6.0-beta",
     "@neondatabase/serverless": "^1.2.0",
     "@types/node": "^25.2.0",
     "@vercel/blob": "^2.8.2",

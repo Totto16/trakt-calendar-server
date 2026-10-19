@@ -2,7 +2,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getAllUsers, type User } from "../../src/utils/authentication";
 import { fetchTraktCalendar } from "../../src/services/trakt";
-import { addNewEntries } from "../../src/utils/dbs/blob";
+import { addNewEntries } from "../../src/utils/blob";
 
 
 async function getCurrentToken(user: User): Promise<string> {
