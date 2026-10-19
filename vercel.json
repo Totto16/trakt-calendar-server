@@ -1,4 +1,21 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "outputDirectory": "dist"
+    "outputDirectory": ".",
+    "functions": {
+        "dist/api/**/*.js": {
+            "runtime": "nodejs24.x"
+        }
+    },
+    "crons": [
+        {
+            "path": "/api/v2/cron?secret=CRONJOB_SECRET",
+            "schedule": "0 */8 * * *"
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/",
+            "destination": "/index.html"
+        }
+    ]
 }
