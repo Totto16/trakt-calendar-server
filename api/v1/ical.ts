@@ -37,6 +37,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(200).send(ics)
   } catch (err) {
     console.error(err)
+        res.setHeader('X-ERROR', `${err}`)
     return res.status(500).send('Internal Server Error')
   }
 }

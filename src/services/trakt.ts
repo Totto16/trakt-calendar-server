@@ -88,7 +88,7 @@ export async function getCodeChallenge(code_verifier: CodeVerifier): Promise<Cod
 
 }
 
-export function getConnectUserUrl(code_challenge: string, redirect_url: string, state: string): string {
+export function getConnectUserUrl(code_challenge: CodeChallenge, redirect_url: string, state: string): string {
 
   if (!process.env.TRAKT_CLIENT_ID) {
     throw new Error("Missing TRAKT_CLIENT_ID")
@@ -98,6 +98,34 @@ export function getConnectUserUrl(code_challenge: string, redirect_url: string, 
   return `${TRAKT_AUTH_API}/oauth/authorize?response_type=code&client_id=${process.env.TRAKT_CLIENT_ID}&redirect_uri=${redirect_url}&code_challenge=${code_challenge}&code_challenge_method=S256&state=${state}`
 
 }
+
+
+export async function getTokenFromCode(
+  code: string, code_verifier: CodeVerifier, redirect_url: string,
+): Promise<RefreshedAccessToken> {
+
+  if (!process.env.TRAKT_CLIENT_ID) {
+    throw new Error("Missing TRAKT_CLIENT_ID")
+  }
+
+  const response = await axios.post(
+    `${TRAKT_AUTH_API}/oauth/token`, {
+    "code": code,
+    "code_verifier": code_verifier.verifier,
+    "client_id": process.env.TRAKT_CLIENT_ID,
+    "redirect_uri": redirect_url,
+    "grant_type": "authorization_code"
+  }
+  )
+
+
+  if (response.status != 200) {
+    throw new Error(response.data)
+  }
+
+  return response.data
+}
+
 
 
 export async function refreshAccessToken(

@@ -88,11 +88,11 @@ export async function createTables(): Promise<void> {
 }
 
 
-export async function addUserAuthState(code_verifier: string): Promise<AuthState> {
+export async function addAuthState(code_verifier: string): Promise<AuthState> {
 
     const sql = getDb();
 
-    const data = await sql`INSERT INTO sessions (code_verifier)
+    const data = await sql`INSERT INTO auth_state (code_verifier)
 VALUES
     (${code_verifier})
 RETURNING *;`;
@@ -103,6 +103,28 @@ RETURNING *;`;
 
     return data[0] as AuthState
 }
+
+
+
+export async function getAuthState(state:string): Promise<AuthState | null> {
+
+    const sql = getDb();
+
+    const data = await sql`SELECT * FROM auth_state WHERE
+        state = ${state}
+    ;`;
+
+    if (data.length == 0) {
+        return null;
+    }
+
+    if (data.length == 1) {
+        return data[0] as AuthState;
+    }
+
+    throw new Error("Unreachable, multiple states")
+}
+
 
 
 
