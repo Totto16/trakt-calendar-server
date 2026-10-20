@@ -11,10 +11,10 @@ export function generateCalendar(shows: Show[], movies: Movie[]): string {
 
     const event = calendar.createEvent({
       start: dayjs(item.first_aired).toDate(),
-      summary: `${item.show.title} S${item.episode.season}E${item.episode.number}`,
+      summary: `${item.show?.title} S${item.episode.season}E${item.episode.number}`,
       description: item.episode.title ?? "",
     });
-    event.uid(`trakt-show-${item.episode.ids.trakt}`);
+    event.uid(`trakt-show-${item.episode.ids?.trakt}`);
   }
 
   for (const item of movies) {

@@ -4,9 +4,54 @@ import axios from 'axios'
 const TRAKT_API = 'https://api.trakt.tv'
 const TRAKT_AUTH_API = 'https://auth.trakt.tv'
 
-//TODO: better type these
-export type Show = any & { _show: true }
+interface ShowV0 {
+  "show": {
+    "ids": {
+      "imdb": string | null,
+      "plex": {
+        "guid": string | null,
+        "slug"?: string
+      },
+      "slug": string,
+      "tmdb": number | null,
+      "tvdb": number | null,
+      "trakt": number,
+    },
+    "year": number,
+    "title": string,
+    "aired_episodes": number
+  },
+  "episode": {
+    "ids": {
+      "imdb": string | null,
+      "plex": {
+        "guid": string | null,
+        "slug"?: string
+      },
+      "tmdb": number | null,
+      "tvdb": number | null,
+      "trakt": number
+    },
+    "title": string,
+    "number": number,
+    "season": number
+  },
+  "first_aired": string,
+  "released": string
+}
 
+//when trakt changes its data, we need this
+type ShowV1 = ShowV0
+
+type RecursiveOptional<T> = {
+  [K in keyof T]?: T[K] extends object
+  ? RecursiveOptional<T[K]>
+  : T[K];
+};
+
+export type Show = RecursiveOptional<ShowV0> | RecursiveOptional<ShowV1>
+
+//TODO: better type this
 export type Movie = any & { _movie: true }
 
 export async function fetchTraktCalendar(
