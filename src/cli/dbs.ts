@@ -1,5 +1,5 @@
 import path from "node:path"
-import { getDb } from "./authentication";
+import { getDb } from "../utils/authentication";
 import { readdir, readFile } from "node:fs/promises";
 import dotenv from 'dotenv'
 

@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "vercel dev",
-    "build:db": "node dist/src/utils/dbs.js",
+    "build:db": "node dist/src/cli/dbs.js",
     "build:compile": "tsc",
-    "build": "npm run build:compile && npm run build:db"
+    "build:static": "node dist/src/cli/static.js",
+    "build": "npm run build:compile && npm run build:db && npm run build:static"
   },
   "keywords": [],
   "author": "",

@@ -1,10 +1,8 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "outputDirectory": ".",
+    "outputDirectory": "dist",
     "functions": {
-        "dist/api/**/*.js": {
-            "runtime": "nodejs24.x"
-        }
+        "api/**/*.js": {}
     },
     "crons": [
         {
