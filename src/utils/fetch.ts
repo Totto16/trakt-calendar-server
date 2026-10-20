@@ -14,8 +14,6 @@ async function refreshUserToken(user: User): Promise<User> {
 
     return await updateUser(user, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at })
 
-
-
 }
 
 async function getCurrentToken(user: User, force_token_refresh: boolean): Promise<string> {

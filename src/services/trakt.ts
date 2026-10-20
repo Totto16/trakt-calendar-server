@@ -156,3 +156,41 @@ export async function refreshAccessToken(
 
   return response.data as Token
 }
+
+export interface UserInfo {
+  "user": {
+    "ids": {
+      "slug": string,
+      "trakt": number,
+      "uuid": string
+    },
+  }
+}
+
+export async function getTraktUserInfo(
+  token: string,
+): Promise<UserInfo> {
+
+  if (!process.env.TRAKT_CLIENT_ID) {
+    throw new Error("Missing TRAKT_CLIENT_ID")
+  }
+
+  const startDate = new Date().toISOString().split('T')[0]
+
+  const response = await axios.get(
+    `${TRAKT_API}/users/settings`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,  // manual token
+        'trakt-api-key': process.env.TRAKT_CLIENT_ID,
+        'trakt-api-version': '2',
+      },
+    }
+  )
+
+  if (response.status != 200) {
+    throw new Error(response.data)
+  }
+
+  return response.data
+}

@@ -8,6 +8,8 @@ export interface User {
     "access_token": string
     "expires_at": number
     "refresh_token": string
+
+    trakt_uuid: string
 }
 
 
@@ -55,13 +57,13 @@ export interface UserInfo {
     access_token: string, expires_at: Date, refresh_token: string
 }
 
-export async function addUser(secret: string, info: UserInfo): Promise<User> {
+export async function addUser(secret: string, info: UserInfo, trakt_uuid: string): Promise<User> {
 
     const sql = getDb();
 
-    const data = await sql`INSERT INTO users (secret, access_token, expires_at, refresh_token)
+    const data = await sql`INSERT INTO users (secret, access_token, expires_at, refresh_token, trakt_uuid)
 VALUES
-    (${secret}, ${info.access_token}, ${info.expires_at}, ${info.refresh_token})
+    (${secret}, ${info.access_token}, ${info.expires_at}, ${info.refresh_token}, ${trakt_uuid})
 RETURNING *;`;
 
     if (data.length != 1) {

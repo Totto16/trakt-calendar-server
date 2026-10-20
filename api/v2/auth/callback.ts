@@ -1,7 +1,7 @@
 // api/user.ts
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { addUser, deleteState, getAuthState } from "../../../src/utils/authentication";
-import { getTokenFromCode } from "../../../src/services/trakt";
+import { getTokenFromCode, getTraktUserInfo } from "../../../src/services/trakt";
 import { fixDate } from "../../../src/utils/date";
 
 export function getUserSecret(): string {
@@ -48,9 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const expires_at = new Date(fixDate(result.expires_at))
 
-    const user_secret = await getUserSecret()
+    const user_secret = getUserSecret()
 
-    const user = await addUser(user_secret, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at })
+    const trakt_user = await getTraktUserInfo(result.access_token)
+
+    const user = await addUser(user_secret, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at }, trakt_user.user.ids.uuid)
 
     await deleteState(auth_state)
 

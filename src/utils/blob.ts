@@ -6,8 +6,8 @@ import type { User } from "./authentication";
 
 function getFilenames(user: User) {
     return {
-        episodesFile: `${user.user_id}/episodes.json`,
-        moviesFile: `${user.user_id}/movies.json`,
+        episodesFile: `user_${user.user_id}/episodes.json`,
+        moviesFile: `user_${user.user_id}/movies.json`,
     }
 }
 
