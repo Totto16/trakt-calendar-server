@@ -1,9 +1,6 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "outputDirectory": "dist",
-    "functions": {
-        "api/**/*.js": {}
-    },
     "crons": [
         {
             "path": "/api/v2/cron",
