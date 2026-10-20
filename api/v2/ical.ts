@@ -3,10 +3,11 @@ import { getUser } from '../../src/utils/authentication';
 import { generateCalendar } from '../../src/utils/ical'
 import { getAllEntries } from '../../src/utils/blob'
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { refreshDataForUser } from '../../src/utils/fetch';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
   try {
-    const { secret, user_id } = req.query
+    const { secret, user_id, force } = req.query
 
     if (!secret || typeof secret !== 'string') {
       return res.status(400).send('Missing or invalid secret')
@@ -27,6 +28,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(401).send('Invalid credentials')
     }
 
+    if (!!force) {
+
+      const { days = '30' } = req.query
+
+      const daysNum = Number(days)
+      if (Number.isNaN(daysNum) || daysNum <= 0) {
+        return res.status(400).send('Invalid days parameter')
+      }
+
+
+      await refreshDataForUser(user, daysNum)
+    }
+
     const [shows, movies] = await getAllEntries(user)
 
     const ics = generateCalendar(shows, movies)
@@ -37,7 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return res.status(200).send(ics)
   } catch (err) {
     console.error(err)
-        res.setHeader('X-ERROR', `${err}`)
+    res.setHeader('X-ERROR', `${err}`)
     return res.status(500).send('Internal Server Error')
   }
 }
