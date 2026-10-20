@@ -62,7 +62,7 @@ function getMovieId(movie: Movie): ID | null | undefined {
 }
 
 function getShowId(show: Show): ID | null | undefined {
-    return show.episode.ids.trakt
+    return show.episode?.ids?.trakt
 }
 
 export async function addNewEntries(user: User, entries: [Show[], Movie[]]): Promise<void> {
