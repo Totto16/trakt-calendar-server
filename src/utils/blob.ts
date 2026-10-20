@@ -18,7 +18,7 @@ async function getJSONBlobOr<T>(pathname: string, def: T): Promise<T> {
         return def
     }
 
-    return await new Response(result.stream).json();
+    return await new Response(result.stream).json() as T;
 }
 
 type ID = string | number
