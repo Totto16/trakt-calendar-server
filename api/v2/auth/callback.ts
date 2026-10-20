@@ -3,6 +3,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { addUser, deleteState, getAuthState } from "../../../src/utils/authentication";
 import { getTokenFromCode, getTraktUserInfo } from "../../../src/services/trakt";
 import { fixDate } from "../../../src/utils/date";
+import { NeonDbError } from "@neondatabase/serverless";
 
 export function getUserSecret(): string {
 
@@ -62,7 +63,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
   } catch (err) {
     console.error(err)
-    res.setHeader('X-ERROR', `${err}`)
+    try {
+      res.setHeader('X-ERROR', JSON.stringify(err))
+    } catch (_) {
+      res.setHeader('X-ERROR', `${err}`)
+    }
+
+    if (err instanceof NeonDbError) {
+      if (err.code == "23505") {
+        return res.status(400).send('An User with this trakt ID already exists')
+      }
+    }
     return res.status(500).send('Internal Server Error')
   }
 }
