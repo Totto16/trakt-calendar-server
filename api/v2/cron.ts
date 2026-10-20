@@ -29,6 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8')
+      console.error({ err: 'Unauthorized', hdrs: req.headers })
       return res.status(401).send({ err: 'Unauthorized', hdrs: req.headers });
     }
 
