@@ -1,22 +1,38 @@
-import { fetchTraktCalendar } from "../services/trakt";
-import type { User } from "./authentication";
+import { fetchTraktCalendar, refreshAccessToken } from "../services/trakt";
+import { updateUser, type User } from "./authentication";
 import { addNewEntries } from "./blob";
+import { fixDate } from "./date";
 
-async function getCurrentToken(user: User): Promise<string> {
+async function refreshUserToken(user: User): Promise<User> {
+
+    const redirect_url = `https://${process.env.HOSTNAME}/api/v2/auth/callback`
+
+    const result = await refreshAccessToken(user.refresh_token, redirect_url)
+
+    const expires_at = new Date(fixDate(result.expires_at))
+
+
+    return await updateUser(user, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at })
+
+
+
+}
+
+async function getCurrentToken(user: User, force_token_refresh: boolean): Promise<string> {
 
     const now = new Date()
 
-    if (now.getTime() > user.expires_at) {
-        //TODO: implement the usage of the refresh token
-        throw new Error("TODO: implement refresh logic")
+    if (force_token_refresh || now.getTime() > user.expires_at) {
+        const newUser = await refreshUserToken(user)
+        return newUser.access_token
     }
 
     return user.access_token;
 }
 
-export async function refreshDataForUser(user: User, days: number): Promise<void> {
+export async function refreshDataForUser(user: User, days: number, force_token_refresh: boolean = false): Promise<void> {
 
-    const token = await getCurrentToken(user)
+    const token = await getCurrentToken(user, force_token_refresh)
 
     const entries = await Promise.all([
         fetchTraktCalendar(token, 'shows', days),

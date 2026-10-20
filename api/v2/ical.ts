@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       }
 
 
-      await refreshDataForUser(user, daysNum)
+      await refreshDataForUser(user, daysNum, force === "refresh_token")
     }
 
     const [shows, movies] = await getAllEntries(user)

@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const user_secret = await getUserSecret()
 
-    const user = await addUser(user_secret, result.access_token, expires_at, result.refresh_token)
+    const user = await addUser(user_secret, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at })
 
     await deleteState(auth_state)
 

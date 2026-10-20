@@ -51,14 +51,17 @@ export async function getAllUsers(): Promise<User[]> {
     return data as User[]
 }
 
+export interface UserInfo {
+    access_token: string, expires_at: Date, refresh_token: string
+}
 
-export async function addUser(secret: string, access_token: string, expires_at: Date, refresh_token: string): Promise<User> {
+export async function addUser(secret: string, info: UserInfo): Promise<User> {
 
     const sql = getDb();
 
     const data = await sql`INSERT INTO users (secret, access_token, expires_at, refresh_token)
 VALUES
-    (${secret}, ${access_token}, ${expires_at}, ${refresh_token})
+    (${secret}, ${info.access_token}, ${info.expires_at}, ${info.refresh_token})
 RETURNING *;`;
 
     if (data.length != 1) {
@@ -67,6 +70,25 @@ RETURNING *;`;
 
     return data[0] as User
 }
+
+export async function updateUser(user: User, info: UserInfo): Promise<User> {
+
+    const sql = getDb();
+
+    const data = await sql`UPDATE users
+SET access_token = ${info.access_token},
+    refresh_token = ${info.refresh_token},
+    expires_at = ${info.expires_at}
+WHERE   user_id = ${user.user_id}
+RETURNING *;`;
+
+    if (data.length != 1) {
+        throw new Error("Error updating user")
+    }
+
+    return data[0] as User
+}
+
 
 
 export interface AuthState {

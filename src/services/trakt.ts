@@ -40,12 +40,6 @@ export async function fetchTraktCalendar(
 }
 
 
-export interface RefreshedAccessToken {
-  "access_token": string,
-  "expires_in": number,
-  "refresh_token": string
-}
-
 export interface CodeVerifier {
   verifier: string
 }
@@ -137,10 +131,10 @@ export async function getTokenFromCode(
 }
 
 
-
 export async function refreshAccessToken(
-  token: string,
-): Promise<RefreshedAccessToken> {
+  refresh_token: string,
+  redirect_url: string,
+): Promise<Token> {
 
   if (!process.env.TRAKT_CLIENT_ID) {
     throw new Error("Missing TRAKT_CLIENT_ID")
@@ -148,15 +142,11 @@ export async function refreshAccessToken(
 
   const response = await axios.post(
     `${TRAKT_AUTH_API}/oauth/token`, {
-    todo: "TODO"
-  },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,  // manual token
-        'trakt-api-key': process.env.TRAKT_CLIENT_ID,
-        'trakt-api-version': '2',
-      },
-    },
+    "client_id": process.env.TRAKT_CLIENT_ID,
+    "grant_type": "refresh_token",
+    "refresh_token": refresh_token,
+    "redirect_uri": redirect_url,
+  }
   )
 
 
@@ -164,5 +154,5 @@ export async function refreshAccessToken(
     throw new Error(response.data)
   }
 
-  return response.data as RefreshedAccessToken
+  return response.data as Token
 }
