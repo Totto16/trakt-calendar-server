@@ -4,6 +4,7 @@ import { addUser, deleteState, getAuthState } from "../../../src/utils/authentic
 import { getTokenFromCode, getTraktUserInfo } from "../../../src/services/trakt";
 import { fixDate } from "../../../src/utils/date";
 import { NeonDbError } from "@neondatabase/serverless";
+import { AxiosError } from "axios";
 
 export function getUserSecret(): string {
 
@@ -72,6 +73,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     if (err instanceof NeonDbError) {
       if (err.code == "23505") {
         return res.status(400).send('An User with this trakt ID already exists')
+      }
+    } else if (err instanceof AxiosError) {
+      if (err.code == "ERR_BAD_REQUEST") {
+        return res.status(400).send('An API request to trakt failed, this means this url was called twice, as the code is not valid anymore!')
       }
     }
     return res.status(500).send('Internal Server Error')
