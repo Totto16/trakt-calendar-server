@@ -29,7 +29,8 @@ async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T)
     const newData = []
     const ids: Set<ID> = new Set()
 
-    for (const data of [...previous, ...array]) {
+    //NOTE: use newer ones first, so that updates to the data get used first, and than the old data gets added
+    for (const data of [...array, ...previous]) {
         const id = idFn(data)
         if (id === null || id === undefined) {
             continue;
