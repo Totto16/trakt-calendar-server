@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
     const auth_state = await getAuthState(state)
     if (auth_state == null) {
-      return res.status(401).send('Invalid state')
+      return res.status(401).send("Invalid state, this means this url was called twice, as the state is not valid anymore")
     }
 
     //TODO: should i use another one?
