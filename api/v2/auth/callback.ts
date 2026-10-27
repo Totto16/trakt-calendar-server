@@ -6,7 +6,7 @@ import { fixDate } from "../../../src/utils/date";
 import { NeonDbError } from "@neondatabase/serverless";
 import { AxiosError } from "axios";
 
-export function getUserSecret(): string {
+function getUserSecret(): string {
 
   function generateRandomString(length: number) {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
