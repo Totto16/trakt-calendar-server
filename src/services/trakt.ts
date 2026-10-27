@@ -220,8 +220,6 @@ export async function getTraktUserInfo(
     throw new Error("Missing TRAKT_CLIENT_ID")
   }
 
-  const startDate = new Date().toISOString().split('T')[0]
-
   const response = await axios.get(
     `${TRAKT_API}/users/settings`,
     {
