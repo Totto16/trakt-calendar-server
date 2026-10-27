@@ -1,4 +1,4 @@
-import { fetchTraktCalendar, refreshAccessToken } from "../services/trakt";
+import { fetchTraktCalendar, refreshAccessToken, type Movie, type Show } from "../services/trakt";
 import { updateUser, type User } from "./authentication";
 import { addNewEntries } from "./blob";
 import { fixDate } from "./date";
@@ -28,14 +28,21 @@ async function getCurrentToken(user: User, force_token_refresh: boolean): Promis
     return user.access_token;
 }
 
-export async function refreshDataForUser(user: User, days: number, force_token_refresh: boolean = false): Promise<void> {
+export interface DataEntry {
+    shows: number,
+    movies: number
+}
+
+export async function refreshDataForUser(user: User, days: number, force_token_refresh: boolean = false): Promise<DataEntry> {
 
     const token = await getCurrentToken(user, force_token_refresh)
 
-    const entries = await Promise.all([
+    const entries: [Show[], Movie[]] = await Promise.all([
         fetchTraktCalendar(token, 'shows', days),
         fetchTraktCalendar(token, 'movies', days),
     ])
 
-    await addNewEntries(user, entries)
+    const [shows, movies] = await addNewEntries(user, entries)
+
+    return { shows, movies }
 }

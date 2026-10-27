@@ -23,7 +23,7 @@ async function getJSONBlobOr<T>(pathname: string, def: T): Promise<T> {
 
 type ID = string | number
 
-async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T) => ID | null | undefined): Promise<void> {
+async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T) => ID | null | undefined): Promise<number> {
     const previous = await getJSONBlobOr<T[]>(pathname, [])
 
     const newData = []
@@ -43,6 +43,8 @@ async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T)
     }
 
     const _result = await put(pathname, JSON.stringify(newData), { access: "private", allowOverwrite: true })
+
+    return newData.length - previous.length
 
 }
 
@@ -66,13 +68,15 @@ function getShowId(show: Show): ID | null | undefined {
     return show.episode?.ids?.trakt
 }
 
-export async function addNewEntries(user: User, entries: [Show[], Movie[]]): Promise<void> {
+export async function addNewEntries(user: User, entries: [Show[], Movie[]]): Promise<[number, number]> {
     const [shows, movies] = entries
     const { episodesFile, moviesFile } = getFilenames(user);
 
-    await Promise.all([
+    const result = await Promise.all([
         updateArrayBlob<Show>(episodesFile, shows, getShowId),
         updateArrayBlob<Movie>(moviesFile, movies, getMovieId)
     ])
+
+    return result
 
 }

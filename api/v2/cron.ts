@@ -1,19 +1,29 @@
 // api/cron.ts
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getAllUsers, type User } from "../../src/utils/authentication";
-import { refreshDataForUser } from "../../src/utils/fetch";
+import { refreshDataForUser, type DataEntry } from "../../src/utils/fetch";
 
 
+interface Data {
+  [key: string]: DataEntry
+}
 
-async function refreshDataForAllUsers(days: number): Promise<void> {
+async function refreshDataForAllUsers(days: number): Promise<Data> {
 
   const users = await getAllUsers()
 
-  await Promise.all([users.map(user => {
-    return refreshDataForUser(user, days);
-  })])
+  const result: [User, DataEntry][] = await Promise.all(users.map(async (user): Promise<[User, DataEntry]> => {
+    const data = await refreshDataForUser(user, days);
+    return [user, data]
+  }))
 
+  const data: Data = {}
 
+  for (const [user, d] of result) {
+    data[user.user_id] = d
+  }
+
+  return data
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
@@ -40,9 +50,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(400).send('Invalid days parameter')
     }
 
-    await refreshDataForAllUsers(daysNum)
+    const data = await refreshDataForAllUsers(daysNum)
 
-    return res.status(200).send("Success")
+    res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
+    return res.status(200).send(data)
   } catch (err) {
     console.error(err)
     res.setHeader('X-ERROR', `${err}`)
