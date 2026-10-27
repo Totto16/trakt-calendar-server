@@ -5,8 +5,8 @@ import type { Movie, Show } from "../services/trakt"
 
 export function generateCalendar(shows: Show[], movies: Movie[]): string {
   const calendar = ical({ name: "Trakt Calendar", timezone: "UTC" })
-  //colors: #9e49c3
-  // or #8468ef
+  //colors: #9e49c3 (OLD color)
+  // or #5135a4   (NEW color)
   //TODO: how to make google calendar use this color?
   // COLOR     Property     RFC 7986 section 5.9. COLOR Property
 
