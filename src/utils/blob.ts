@@ -42,9 +42,11 @@ async function updateArrayBlob<T>(pathname: string, array: T[], idFn: (entry: T)
         }
     }
 
-    const _result = await put(pathname, JSON.stringify(newData), { access: "private", allowOverwrite: true })
+    const _result = await put(pathname, JSON.stringify(newData), { access: "private", allowOverwrite: true, contentType: 'application/json', })
 
-    return newData.length - previous.length
+    const addedAmount = newData.length - previous.length;
+
+    return addedAmount
 
 }
 
