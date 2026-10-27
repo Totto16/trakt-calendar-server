@@ -11,7 +11,7 @@ async function refreshUserToken(user: User): Promise<User> {
 
     const expires_at = new Date(fixDate(result.expires_at))
 
-
+    //NOTE: normal APIs don't update the refresh token, but this APi also updates the refresh_token, so we need to update that token too
     return await updateUser(user, { access_token: result.access_token, refresh_token: result.refresh_token, expires_at })
 
 }
