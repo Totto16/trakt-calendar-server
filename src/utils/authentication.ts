@@ -140,9 +140,11 @@ export async function deleteState(state: AuthState): Promise<void> {
 
     const sql = getDb();
 
-    const data = await sql`DELETE FROM auth_state WHERE
+    const _data = await sql`DELETE FROM auth_state WHERE
         state = ${state.state}
     ;`;
+
+
 
 }
 

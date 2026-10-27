@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       return res.status(401).send('Invalid credentials')
     }
 
-    if (!!force) {
+    if (force) {
 
       const { days = '30' } = req.query
 

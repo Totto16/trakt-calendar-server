@@ -66,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     console.error(err)
     try {
       res.setHeader('X-ERROR', JSON.stringify(err))
-    } catch (_) {
+    } catch (_err) {
       res.setHeader('X-ERROR', `${err}`)
     }
 

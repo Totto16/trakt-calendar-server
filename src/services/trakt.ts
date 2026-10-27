@@ -52,6 +52,7 @@ type RecursiveOptional<T> = {
 export type Show = RecursiveOptional<ShowV0> | RecursiveOptional<ShowV1>
 
 //TODO: better type this
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Movie = any & { _movie: true }
 
 export async function fetchTraktCalendar(
